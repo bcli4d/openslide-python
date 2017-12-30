@@ -31,8 +31,8 @@ from threading import Lock
 SLIDE_DIR = '.'
 SLIDE_CACHE_SIZE = 10
 DEEPZOOM_FORMAT = 'jpeg'
-DEEPZOOM_TILE_SIZE = 254
-DEEPZOOM_OVERLAP = 1
+DEEPZOOM_TILE_SIZE = 512
+DEEPZOOM_OVERLAP = 0
 DEEPZOOM_LIMIT_BOUNDS = True
 DEEPZOOM_TILE_QUALITY = 75
 
@@ -135,7 +135,8 @@ def index():
 @app.route('/<path:path>')
 def slide(path):
 #    import pdb; pdb.set_trace()
-    slide = _get_slide(path)
+#    slide = _get_slide(path)
+    slide = _get_slide('boxes.tiff')
     slide_url = url_for('dzi', path=path)
     return render_template('slide-gcs.html', slide_url=slide_url,
             slide_filename=slide.filename, slide_mpp=slide.mpp)
@@ -143,7 +144,7 @@ def slide(path):
 
 @app.route('/<path:path>.dzi')
 def dzi(path):
-#    import pdb; pdb.set_trace()
+    import pdb; pdb.set_trace()
     slide = _get_slide(path)
     format = app.config['DEEPZOOM_FORMAT']
     resp = make_response(slide.get_dzi(format))
@@ -153,7 +154,7 @@ def dzi(path):
 
 @app.route('/<path:path>_files/<int:level>/<int:col>_<int:row>.<format>')
 def tile(path, level, col, row, format):
-#    import pdb; pdb.set_trace()
+    import pdb; pdb.set_trace()
     slide = _get_slide(path)
     format = format.lower()
     if format != 'jpeg' and format != 'png':

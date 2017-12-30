@@ -29,14 +29,17 @@ div#view {
 $(document).ready(function() {
     var viewer = new OpenSeadragon({
         id:            "view",
-        prefixUrl:     "/openseadragon/images/",
+        prefixUrl:     "{{ url_for('static', filename='images/') }}",
 	tileSources:   {
             height: 67205,
             width:  125496,
+//            height: 10000,
+//            width:  9727,
             tileSize: 512,
             minLevel: 4,
             getTileUrl: function( level, x, y ){
                 return "http://storage.googleapis.com/svs-images/TCGA-3X-AAVA-01Z-00-DX1_files/" +
+//                return "http://storage.googleapis.com/svs-images/TCGA-CG-5733-01Z-00-DX1_files_files/" +
         		(level) + "/" + x + "_" + y + ".jpeg";
             }
         },
