@@ -134,42 +134,44 @@ def index():
 
 @app.route('/<path:path>')
 def slide(path):
-#    import pdb; pdb.set_trace()
-#    slide = _get_slide(path)
-    slide = _get_slide('boxes.tiff')
-    slide_url = url_for('dzi', path=path)
+    import pdb; pdb.set_trace()
+    path = 'boxes.tiff'
+    slide = _get_slide(path)
+#    slide = _get_slide('boxes.tiff')
+#    slide_url = url_for('dzi', path=path)
+    slide_url = '/boxes.tiff.dzi'
     return render_template('slide-gcs.html', slide_url=slide_url,
             slide_filename=slide.filename, slide_mpp=slide.mpp)
 
 
-@app.route('/<path:path>.dzi')
-def dzi(path):
-    import pdb; pdb.set_trace()
-    slide = _get_slide(path)
-    format = app.config['DEEPZOOM_FORMAT']
-    resp = make_response(slide.get_dzi(format))
-    resp.mimetype = 'application/xml'
-    return resp
+#@app.route('/<path:path>.dzi')
+#def dzi(path):
+#    import pdb; pdb.set_trace()
+#    slide = _get_slide(path)
+#    format = app.config['DEEPZOOM_FORMAT']
+#    resp = make_response(slide.get_dzi(format))
+#    resp.mimetype = 'application/xml'
+#    return resp
 
 
-@app.route('/<path:path>_files/<int:level>/<int:col>_<int:row>.<format>')
-def tile(path, level, col, row, format):
-    import pdb; pdb.set_trace()
-    slide = _get_slide(path)
-    format = format.lower()
-    if format != 'jpeg' and format != 'png':
-        # Not supported by Deep Zoom
-        abort(404)
-    try:
-        tile = slide.get_tile(level, (col, row))
-    except ValueError:
-        # Invalid level or coordinates
-        abort(404)
-    buf = PILBytesIO()
-    tile.save(buf, format, quality=app.config['DEEPZOOM_TILE_QUALITY'])
-    resp = make_response(buf.getvalue())
-    resp.mimetype = 'image/%s' % format
-    return resp
+#@app.route('/<path:path>_files/<int:level>/<int:col>_<int:row>.<format>')
+#def tile(path, level, col, row, format):
+#    import pdb; pdb.set_trace()
+#    slide = _get_slide(path)
+#    format = format.lower()
+#    if format != 'jpeg' and format != 'png':
+#        # Not supported by Deep Zoom
+#        abort(404)
+#    try:
+#        tile = slide.get_tile(level, (col, row))
+#    except ValueError:
+#        # Invalid level or coordinates
+#        abort(404)
+#    buf = PILBytesIO()
+#    tile.save(buf, format, quality=app.config['DEEPZOOM_TILE_QUALITY'])
+#    resp = make_response(buf.getvalue())
+#    resp.mimetype = 'image/%s' % format
+#    return resp
 
 
 if __name__ == '__main__':
@@ -179,7 +181,7 @@ if __name__ == '__main__':
                 help='display entire scan area')
     parser.add_option('-c', '--config', metavar='FILE', dest='config',
                 help='config file')
-    parser.add_option('-d', '--debug', dest='DEBUG', action='store_true',
+    parser.add_option('-d', '--debug', dest='DEBUG', default=False, action='store_false',
                 help='run in debugging mode (insecure)')
     parser.add_option('-e', '--overlap', metavar='PIXELS',
                 dest='DEEPZOOM_OVERLAP', type='int',
@@ -216,5 +218,5 @@ if __name__ == '__main__':
     except IndexError:
         pass
 
-    app.debug = True
+#    app.debug = True
     app.run(host=opts.host, port=opts.port, threaded=True)
