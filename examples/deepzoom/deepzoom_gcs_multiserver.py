@@ -38,6 +38,7 @@ DEEPZOOM_OVERLAP = 0
 DEEPZOOM_LIMIT_BOUNDS = True
 DEEPZOOM_TILE_QUALITY = 75
 BUCKET = 'gs://svs-images/'
+GCS_URL = 'http://storage.googleapis.com/svs-images/'
 DZIS = './dzis'
 DZI = './dzi'
 
@@ -126,7 +127,7 @@ class _SlideFile(object):
 
 @app.before_first_request
 def _setup():
-    import pdb; pdb.set_trace()
+#    import pdb; pdb.set_trace()
     app.basedir = os.path.abspath(app.config['SLIDE_DIR'])
     config_map = {
         'DEEPZOOM_TILE_SIZE': 'tile_size',
@@ -167,19 +168,19 @@ def _get_slide(barcode):
 @app.route('/')
 def index():
 #    return render_template('files.html', root_dir=_Directory(app.basedir))
-    import pdb; pdb.set_trace()
+#    import pdb; pdb.set_trace()
     return render_template('files.html', root_dir=app.directory)
 
 
 @app.route('/<barcode>')
 def slide(barcode):
-    import pdb; pdb.set_trace()
+#    import pdb; pdb.set_trace()
 #    path = 'boxes.tiff'
     slide = _get_slide(barcode)
 #    slide = _get_slide('boxes.tiff')
 #    slide_url = url_for('dzi', path=path)
 #    slide_url = '/boxes.tiff.dzi'
-    slide_url = app.config['BUCKET']+barcode+'_files'
+    slide_url = app.config['GCS_URL']+barcode+'_files'
     root = slide.getroot()
     slide_format = root.attrib['Format']
     slide_tilesize = root.attrib['TileSize']

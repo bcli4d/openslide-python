@@ -42,7 +42,7 @@ $(document).ready(function() {
             getTileUrl: function( level, x, y ){
 //                return "http://storage.googleapis.com/svs-images/TCGA-3X-AAVA-01Z-00-DX1_files/" +
 //                return "http://storage.googleapis.com/svs-images/TCGA-CG-5733-01Z-00-DX1_files_files/" +
-            return "{{ slide_url }}" + "/" + (level) + "/" + x + "_" + y + "." + {{ slide_format }};
+            return "{{ slide_url }}" + "/" + (level) + "/" + x + "_" + y + "." + "{{ slide_format }}";
             }
         },
         showNavigator: true,
