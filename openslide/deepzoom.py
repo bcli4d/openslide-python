@@ -113,6 +113,15 @@ class DeepZoomGenerator(object):
         self._bg_color = '#' + self._osr.properties.get(
                         openslide.PROPERTY_NAME_BACKGROUND_COLOR, 'ffffff')
 
+        # Slide MPP
+        try:
+            mpp_x = osr.properties[openslide.PROPERTY_NAME_MPP_X]
+            mpp_y = osr.properties[openslide.PROPERTY_NAME_MPP_Y]
+            self._mpp = (float(mpp_x) + float(mpp_y)) / 2
+        except (KeyError, ValueError):
+            self._mpp = 0
+
+
     def __repr__(self):
         return '%s(%r, tile_size=%r, overlap=%r, limit_bounds=%r)' % (
                 self.__class__.__name__, self._osr, self._z_t_downsample,
@@ -236,6 +245,7 @@ class DeepZoomGenerator(object):
                         xmlns='http://schemas.microsoft.com/deepzoom/2008')
         w, h = self._l0_dimensions
         SubElement(image, 'Size', Width=str(w), Height=str(h))
+        SubElement(image, 'MPP', mpp=str(self._mpp))
         tree = ElementTree(element=image)
         buf = BytesIO()
         tree.write(buf, encoding='UTF-8')

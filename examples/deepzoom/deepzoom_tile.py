@@ -23,6 +23,7 @@
 from __future__ import print_function
 import json
 from multiprocessing import Process, JoinableQueue
+#import openslide
 import openslide
 from openslide import open_slide, ImageSlide
 from openslide.deepzoom import DeepZoomGenerator
@@ -265,6 +266,7 @@ if __name__ == '__main__':
     if opts.basename is None:
         opts.basename = os.path.splitext(os.path.basename(slidepath))[0]
 
+    import pdb; pdb.set_trace()
     DeepZoomStaticTiler(slidepath, opts.basename, opts.format,
                 opts.tile_size, opts.overlap, opts.limit_bounds, opts.quality,
                 opts.workers, opts.with_viewer).run()
