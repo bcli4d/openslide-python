@@ -38,7 +38,7 @@ DEEPZOOM_OVERLAP = 0
 DEEPZOOM_LIMIT_BOUNDS = True
 DEEPZOOM_TILE_QUALITY = 75
 BUCKET = 'gs://dzi-images/'
-GCS_URL = 'http://storage.googleapis.com/svs-images/'
+GCS_URL = 'http://storage.googleapis.com/dzi-images/'
 DZIS = './dzis'
 DZI = './dzi'
 
@@ -239,8 +239,8 @@ if __name__ == '__main__':
                 help='display entire scan area')
     parser.add_option('-c', '--config', metavar='FILE', dest='config',
                 help='config file')
-    parser.add_option('-d', '--debug', dest='DEBUG', default=False, action='store_false',
-                help='run in debugging mode (insecure)')
+#    parser.add_option('-d', '--debug', dest='DEBUG', default=False, action='store_false',
+#                help='run in debugging mode (insecure)')
     parser.add_option('-e', '--overlap', metavar='PIXELS',
                 dest='DEEPZOOM_OVERLAP', type='int',
                 help='overlap of adjacent tiles [1]')

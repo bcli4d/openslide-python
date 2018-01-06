@@ -1,0 +1,1 @@
+gs://isb-cgc-open/NCI-GDC/legacy/TCGA/TCGA-BRCA/Other/Diagnostic_image/a7fe3300-a12a-4b2c-8e86-0b02d96a92c6/TCGA-A8-A06R-01Z-00-DX1.41476D0D-BA72-4FB8-B143-9EB679F26D28.svs

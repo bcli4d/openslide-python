@@ -14,7 +14,6 @@ def get_slides(slidelist):
         return slides
 
 def run(opts,args,slidelist):
-    import pdb; pdb.set_trace()
     slidepath = './temp.svs'
     slides = get_slides(slidelist)
     for slide in slides:
@@ -24,10 +23,11 @@ def run(opts,args,slidelist):
             deepzoom_tile.DeepZoomStaticTiler(slidepath, basename, opts.format,
                 opts.tile_size, opts.overlap, opts.limit_bounds, opts.quality,
                 opts.workers, opts.with_viewer).run()
-            call(['gsutil','-m','cp', '-a','public-read', basename+'.dzi', 'gs://dzi-images'])
-            call(['gsutil','-m','cp', '-a','public-read','-r', basename+'_files', 'gs://dzi-images'])
-            os.remove(basename+'.dzi')
-            shutil.rmtree(basename+'_files')
+            if not opts.dev:
+                call(['gsutil','-m','cp', '-a','public-read', basename+'.dzi', 'gs://dzi-images'])
+                call(['gsutil','-m','cp', '-a','public-read','-r', basename+'_files', 'gs://dzi-images'])
+                os.remove(basename+'.dzi')
+                shutil.rmtree(basename+'_files')
            
 if __name__ == '__main__':
     parser = OptionParser(usage='Usage: %prog [options] <slide>')
@@ -36,7 +36,7 @@ if __name__ == '__main__':
                 help='display entire scan area')
     parser.add_option('-e', '--overlap', metavar='PIXELS', dest='overlap',
                 type='int', default=0,
-                help='overlap of adjacent tiles [1]')
+                      help='overlap of adjacent tiles [0]')
     parser.add_option('-f', '--format', metavar='{jpeg|png}', dest='format',
                 default='jpeg',
                 help='image format for tiles [jpeg]')
@@ -53,20 +53,15 @@ if __name__ == '__main__':
                 help='generate directory tree with HTML viewer')
     parser.add_option('-s', '--size', metavar='PIXELS', dest='tile_size',
                 type='int', default=512,
-                help='tile size [254]')
+                help='tile size [512]')
+    parser.add_option('-d', '--dev', metavar='DEV', dest='dev',
+                default=False, action='store_true',
+                help='use short svs file list')
 
     (opts, args) = parser.parse_args()
 
-    '''
-    try:
-        slidepath = args[0]
-    except IndexError:
-        parser.error('Missing slide argument')
-    if opts.basename is None:
-        opts.basename = os.path.splitext(os.path.basename(slidepath))[0]
-    '''
-
-
-    os.environ["PYTHONPATH"] = "/home/bcliffor/git-home/openslide-python/openslide"
-    slidelist = '/home/bcliffor/projects/dzis/diagnostic_images.txt'                      
+    if opts.dev:
+        slidelist = './dev_images.txt'
+    else:
+        slidelist = './diagnostic_images.txt'                      
     run(opts,args,slidelist)
