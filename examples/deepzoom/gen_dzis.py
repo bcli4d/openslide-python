@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import random
 import os
 import deepzoom_tile
@@ -10,24 +11,32 @@ import shutil
 def get_slides(slidelist):
     with open(slidelist) as f:
         slides = f.read().splitlines()
-        random.shuffle(slides)
+#        random.shuffle(slides)
         return slides
 
 def run(opts,args,slidelist):
-    slidepath = './temp.svs'
     slides = get_slides(slidelist)
+#    import pdb; pdb.set_trace()
     for slide in slides:
-        print slide
+        if slide[0] == '#':
+            print("Skipping {}\n".format(slide))
+            continue
+        else:
+            
+            print ("{}\n".format(slide))
+        basename = slide.partition('Diagnostic_image/')[2].partition('.svs')[0]
+        slidepath = './' + basename + '.svs'
         if call(['gsutil','cp',slide, slidepath])==0:
-            basename = slide.rsplit('/',1)[1].split('.',1)[0]
+            call(['ls', '-l', slidepath])
             deepzoom_tile.DeepZoomStaticTiler(slidepath, basename, opts.format,
                 opts.tile_size, opts.overlap, opts.limit_bounds, opts.quality,
                 opts.workers, opts.with_viewer).run()
-            if not opts.dev:
-                call(['gsutil','-m','cp', '-a','public-read', basename+'.dzi', 'gs://dzi-images'])
-                call(['gsutil','-m','cp', '-a','public-read','-r', basename+'_files', 'gs://dzi-images'])
-                os.remove(basename+'.dzi')
-                shutil.rmtree(basename+'_files')
+            call(['du', '-s', basename+'_files'])
+#           if not opts.dev:
+            if True:
+                call(['gsutil','-m', '-q', 'cp', '-a','public-read', basename +'.dzi', 'gs://dzi-images/' + basename + '.dzi'])
+                call(['gsutil','-m', '-q', 'cp', '-a','public-read','-r', basename+'_files', 'gs://dzi-images/' + basename + '_files'])
+                shutil.rmtree('./' + basename.partition('/')[0])
            
 if __name__ == '__main__':
     parser = OptionParser(usage='Usage: %prog [options] <slide>')
