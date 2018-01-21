@@ -105,12 +105,12 @@ class DeepZoomImageTiler(object):
                     if not os.path.exists(tilename):
                         try:
                             self._queue.put((self._associated, level, (col, row),
-                                             tilename), True, 60)
+                                             tilename), True, 10)
                         except Full:
                             print("***Tile queue remained full for 60 seconds***\n",
                                   file=sys.stderr)
                             print("***Aborting main process***\n",file=sys.stderr)
-                            raise SystemExit
+                            raise SystemExit(1)
                     self._tile_done()
 
     def _tile_done(self):
