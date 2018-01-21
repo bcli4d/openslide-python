@@ -22,6 +22,7 @@
 
 from __future__ import print_function
 import json
+from Queue import Full
 from multiprocessing import Process, JoinableQueue
 import openslide
 from openslide import open_slide, ImageSlide
@@ -102,8 +103,14 @@ class DeepZoomImageTiler(object):
                     tilename = os.path.join(tiledir, '%d_%d.%s' % (
                                     col, row, self._format))
                     if not os.path.exists(tilename):
-                        self._queue.put((self._associated, level, (col, row),
-                                    tilename))
+                        try:
+                            self._queue.put((self._associated, level, (col, row),
+                                             tilename), True, 60)
+                        except Full:
+                            print("***Tile queue remained full for 60 seconds***\n",
+                                  file=sys.stderr)
+                            print("***Aborting main process***\n",file=sys.stderr)
+                            raise SystemExit
                     self._tile_done()
 
     def _tile_done(self):
